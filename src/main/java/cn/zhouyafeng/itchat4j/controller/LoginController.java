@@ -11,6 +11,8 @@ import cn.zhouyafeng.itchat4j.thread.CheckLoginStatusThread;
 import cn.zhouyafeng.itchat4j.utils.SleepUtils;
 import cn.zhouyafeng.itchat4j.utils.tools.CommonTools;
 
+import java.util.List;
+
 /**
  * 登陆控制器
  * 
@@ -63,8 +65,8 @@ public class LoginController {
 			System.exit(0);
 		}
 
-		LOG.info("6.开启微信状态检测线程");
-		new Thread(new CheckLoginStatusThread()).start();
+//		LOG.info("6.开启微信状态检测线程");
+//		new Thread(new CheckLoginStatusThread()).start();
 
 		LOG.info("7. 开启微信状态通知");
 		loginService.wxStatusNotify();
@@ -81,5 +83,11 @@ public class LoginController {
 
 		LOG.info("11. 缓存本次登陆好友相关消息");
 		WechatTools.setUserInfo(); // 登陆成功后缓存本次登陆好友相关消息（NickName, UserName）
+
+
+		List contact=WechatTools.getContactList();
+		List groupIdList=WechatTools.getGroupIdList();
+		List groupList=WechatTools.getGroupList();
+
 	}
 }

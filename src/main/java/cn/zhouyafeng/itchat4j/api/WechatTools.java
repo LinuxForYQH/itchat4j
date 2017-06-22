@@ -57,7 +57,7 @@ public class WechatTools {
 	 * 
 	 * @author https://github.com/yaphone
 	 * @date 2017年5月4日 下午10:56:31
-	 * @param name
+	 * @param nickName
 	 * @return
 	 */
 	public static String getUserNameByNickName(String nickName) {
@@ -68,6 +68,22 @@ public class WechatTools {
 		}
 		return null;
 	}
+
+
+	/**
+	 * 通过UserName获取nickName
+	 * @param userName
+	 * @return
+	 */
+	public static String getNickNameByUserName(String userName) {
+		for (JSONObject o : core.getContactList()) {
+			if (o.getString("UserName").equals(userName)) {
+				return o.getString("NickName");
+			}
+		}
+		return null;
+	}
+
 
 	/**
 	 * 返回好友昵称列表
@@ -153,7 +169,7 @@ public class WechatTools {
 	/**
 	 * 
 	 * @date 2017年5月27日 上午12:21:40
-	 * @param userName
+	 * @param nickName
 	 * @param remName
 	 */
 	public static void remarkNameByNickName(String nickName, String remName) {

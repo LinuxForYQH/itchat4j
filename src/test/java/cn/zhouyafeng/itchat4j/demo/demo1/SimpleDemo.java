@@ -3,7 +3,12 @@ package cn.zhouyafeng.itchat4j.demo.demo1;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
+import cn.zhouyafeng.itchat4j.api.MessageTools;
+import cn.zhouyafeng.itchat4j.core.Core;
+import com.alibaba.fastjson.JSONArray;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSONObject;
@@ -27,7 +32,7 @@ public class SimpleDemo implements IMsgHandlerFace {
 	@Override
 	public String textMsgHandle(JSONObject msg) {
 		// String docFilePath = "D:/itchat4j/pic/1.jpg"; // 这里是需要发送的文件的路径
-		if (!msg.getBoolean("groupMsg")) { // 群消息不处理
+		if (true) { // 群消息不处理
 			// String userId = msg.getString("FromUserName");
 			// MessageTools.sendFileMsgByUserId(userId, docFilePath); // 发送文件
 			// MessageTools.sendPicMsgByUserId(userId, docFilePath);
@@ -46,6 +51,30 @@ public class SimpleDemo implements IMsgHandlerFace {
 				LOG.info(WechatTools.getMemberListByGroupId(WechatTools.getGroupIdList().get(0)));
 				LOG.info("*********************");
 			}
+
+			if (text.indexOf("上分")>=0){
+
+
+				List groupList=WechatTools.getGroupList();
+
+				JSONObject jsonObject=null;
+				for(Object o:groupList){
+					JSONObject j= (JSONObject) o;
+					if(j.get("NickName").equals("小机器人")){
+						jsonObject=j;
+					}
+				}
+
+				String id = (String) jsonObject.get("UserName");
+
+				Core core=Core.getInstance();
+
+				String nikename=WechatTools.getNickNameByUserName((String) msg.get("fasongzheID"));
+				MessageTools.sendMsgById(nikename+"好的",id);
+
+
+			}
+
 			return text;
 		}
 		return null;

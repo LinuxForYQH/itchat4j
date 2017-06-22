@@ -196,7 +196,7 @@ public class MessageTools {
 	 * 
 	 * @author https://github.com/yaphone
 	 * @date 2017年5月7日 下午10:32:45
-	 * @param nackName
+	 * @param nickName
 	 * @return
 	 */
 	public static boolean sendPicMsgByNickName(String nickName, String filePath) {
