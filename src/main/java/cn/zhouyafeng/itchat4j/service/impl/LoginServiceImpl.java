@@ -320,6 +320,9 @@ public class LoginServiceImpl implements ILoginService {
 
 	}
 
+	/**
+	 * 获取联系人
+	 */
 	@Override
 	public void webWxGetContact() {
 		String url = String.format(URLEnum.WEB_WX_GET_CONTACT.getUrl(),

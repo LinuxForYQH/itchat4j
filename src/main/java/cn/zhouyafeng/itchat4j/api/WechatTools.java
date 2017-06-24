@@ -1,10 +1,12 @@
 package cn.zhouyafeng.itchat4j.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
 
+import cn.zhouyafeng.itchat4j.utils.MyHttpClient;
+import cn.zhouyafeng.itchat4j.utils.SleepUtils;
+import cn.zhouyafeng.itchat4j.utils.enums.parameters.BaseParaEnum;
+import cn.zhouyafeng.itchat4j.utils.tools.CommonTools;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,6 +34,8 @@ public class WechatTools {
 	private static Logger LOG = LoggerFactory.getLogger(WechatTools.class);
 
 	private static Core core = Core.getInstance();
+
+	private static MyHttpClient myHttpClient = core.getMyHttpClient();
 
 	/**
 	 * 根据用户名发送文本消息
@@ -122,13 +126,50 @@ public class WechatTools {
 	 * @param groupIdList
 	 * @return
 	 */
-	public static JSONArray getMemberListByGroupId(String groupIdList) {
+	public static JSONObject getMemberListByGroupId(String groupIdList) {
+
+		JSONArray memberList=null;
 		for (JSONObject o : getGroupList()) {
 			if (o.getString("UserName").equals(groupIdList)) {
-				return o.getJSONArray("MemberList");
+				memberList=o.getJSONArray("MemberList");
 			}
 		}
+
+		Map<String, String> resultMap = new HashMap<String, String>();
+		// 组装请求URL和参数
+		String url = "https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxbatchgetcontact?type=ex&pass_ticket="+StorageLoginInfoEnum.pass_ticket.getType()+"&" +
+				"r="+String.valueOf(new Date().getTime());
+		JSONObject postData = new JSONObject();
+
+		JSONObject baseRequest_JSON = new JSONObject();
+		for (BaseParaEnum baseRequest : BaseParaEnum.values()) {
+			baseRequest_JSON.put(baseRequest.para().toLowerCase(),
+					core.getLoginInfo().get(baseRequest.value()).toString());
+		}
+		JSONArray Liat_JSON = new JSONArray();
+		for(Object memberO:memberList){
+			JSONObject member= (JSONObject) memberO;
+			String UserName= (String) member.get("UserName");
+			JSONObject User = new JSONObject();
+			User.put("UserName",UserName);
+			User.put("EncryChatRoomId","");
+			Liat_JSON.add(User);
+		}
+		postData.put("BaseRequest",baseRequest_JSON);
+		postData.put("Count",memberList.size());
+		postData.put("List",Liat_JSON);
+
+		try {
+			HttpEntity entity = myHttpClient.doPost(url, postData.toJSONString());
+			String result = EntityUtils.toString(entity, Consts.UTF_8);
+			JSONObject fullFriendsJsonList = JSON.parseObject(result);
+
+			return fullFriendsJsonList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
+
 	}
 
 	/**

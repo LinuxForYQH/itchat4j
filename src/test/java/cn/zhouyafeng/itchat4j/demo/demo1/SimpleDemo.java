@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import cn.zhouyafeng.itchat4j.Wechat;
 import cn.zhouyafeng.itchat4j.api.MessageTools;
 import cn.zhouyafeng.itchat4j.core.Core;
 import com.alibaba.fastjson.JSONArray;
@@ -66,6 +67,8 @@ public class SimpleDemo implements IMsgHandlerFace {
 				}
 
 				String id = (String) jsonObject.get("UserName");
+
+				WechatTools.getMemberListByGroupId(id);
 
 				Core core=Core.getInstance();
 
